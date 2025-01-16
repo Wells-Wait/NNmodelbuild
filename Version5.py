@@ -48,10 +48,11 @@ class AI:
         return Avrige_Layer_Loss
     
 class BasicNN:
-    def __init__(self,inputs_count,nerons_count,activation):
+    def __init__(self,inputs_count,nerons_count,activation,training_rate=1):
         self.inputs_count=inputs_count
         self.nerons_count=nerons_count
         self.af=activation
+        self.training_rate=training_rate
         self.weights=np.random.rand(nerons_count,inputs_count)-.5#input shape = inputes,1
         self.biases=np.random.rand(nerons_count)-.5
 
@@ -83,8 +84,8 @@ class BasicNN:
                 new_layer_loss[I]+=(dc_da*da_dz*dz_dx)/self.nerons_count
         #commit
         if point_number==number_points-1:
-            self.weights-=self.weights_T
-            self.biases-=self.biases_T
+            self.weights-=self.weights_T*self.training_rate
+            self.biases-=self.biases_T*self.training_rate
         return new_layer_loss
                 
 
@@ -110,7 +111,7 @@ class Flaten2D:
         return out
 
 class BasicCNN:
-    def __init__(self,input_shape,kernel_shape,activation):
+    def __init__(self,input_shape,kernel_shape,activation,training_rate=1):
         print("not done")
         self.input_x=input_shape[0]
         self.input_y=input_shape[1]
@@ -120,8 +121,11 @@ class BasicCNN:
         
         self.af=activation
         
+        self.training_rate=training_rate
+        
         self.weights=np.random.rand(self.kernel_x*self.kernel_y)#input shape = inputes,1
         self.biases=np.random.rand(1)
+        
         
         self.averige_Training_Loss_out=np.zeros(input_shape)
         for out_x in range(0,self.input_x-self.kernel_x+1):
@@ -143,7 +147,7 @@ class BasicCNN:
                         i+=1
                 out[x,y]=AF(out[x,y]+self.biases,self.af)
                 
-                
+        print(out)      
         return out
         
         return AF(np.matmul(self.weights,data_point)+self.biases,self.af)
@@ -178,8 +182,8 @@ class BasicCNN:
                         i+=1
         #commit
         if point_number==number_points-1:
-            self.weights-=self.weights_T
-            self.biases-=self.biases_T
+            self.weights-=self.weights_T*self.training_rate
+            self.biases-=self.biases_T*self.training_rate
         return new_layer_loss
                 
 
@@ -205,6 +209,7 @@ def AFP(array,af):
             return -array*np.e**(-(array)**2 / 2)
         case "ReLU":
             return np.where(array<0,array*0,array*0+1)
+
         case "linear":
             return array*0+1
         case _:
