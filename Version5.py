@@ -29,7 +29,7 @@ class AI:
         Avrige_Layer_Loss=0
         #for each data point
         for point in range(0,number_points):
-            
+           
             #run+save data point
             layer_output=[]
             data_point=x[point]
@@ -37,8 +37,9 @@ class AI:
                 layer_output.append(data_point)
                 data_point=self.layers[i].run_layer(data_point)
             layer_output.append(data_point)
-            
+           
             layer_loss=lossP(y[point],layer_output[-1],self.error_type)
+ 
             Avrige_Layer_Loss+=(y[point]-layer_output[-1])**2 /number_points
             #back propogate
             for i in range(0,len(self.layers)):
@@ -46,7 +47,7 @@ class AI:
                 layer_loss=self.layers[layer].train_layer(layer_loss,layer_output[layer],number_points,point)
 
         return Avrige_Layer_Loss
-    
+   
 class BasicNN:
     def __init__(self,inputs_count,nerons_count,activation,training_rate=1):
         self.inputs_count=inputs_count
@@ -63,19 +64,19 @@ class BasicNN:
         if point_number==0:
             self.weights_T=np.zeros((self.nerons_count,self.inputs_count))#input shape = inputes,1
             self.biases_T=np.zeros(self.nerons_count)
-            
+           
         new_layer_loss=np.zeros(self.inputs_count)
         for N in range(0,self.nerons_count):
             for I in range(0,self.inputs_count):
                 w=self.weights[N,I]
                 b=self.biases[N]
                 x=Previus_layer_out[I]
-                
+               
                 z=x*w+b
-                
+               
                 dc_da=layer_loss[N]
                 da_dz=AFP(z, self.af)
-                
+               
                 dz_dw=x
                 dz_db=1
                 dz_dx=w
@@ -87,19 +88,21 @@ class BasicNN:
             self.weights-=self.weights_T*self.training_rate
             self.biases-=self.biases_T*self.training_rate
         return new_layer_loss
-                
+               
 
 class Flaten2D:
     def __init__(self,shape):
         self.x=shape[0]
         self.y=shape[1]
     def run_layer(self,data_point):
+
         out=np.zeros(self.x*self.y)
         i=0
         for x in range(0,self.x):
             for y in range(0,self.y):
                 out[i]=data_point[x,y]
                 i+=1
+
         return out
     def train_layer(self,layer_loss,Previus_layer_out,number_points,point_number):
         out=np.zeros((self.x,self.y))
@@ -108,6 +111,7 @@ class Flaten2D:
             for y in range(0,self.y):
                 out[x,y]=layer_loss[i]
                 i+=1
+
         return out
 
 class BasicCNN:
@@ -115,18 +119,18 @@ class BasicCNN:
         print("not done")
         self.input_x=input_shape[0]
         self.input_y=input_shape[1]
-        
+       
         self.kernel_x=kernel_shape[0]
         self.kernel_y=kernel_shape[1]
-        
+       
         self.af=activation
-        
+       
         self.training_rate=training_rate
-        
-        self.weights=np.random.rand(self.kernel_x*self.kernel_y)#input shape = inputes,1
-        self.biases=np.random.rand(1)
-        
-        
+       
+        self.weights=np.random.rand(self.kernel_x*self.kernel_y)-.5#input shape = inputes,1
+        self.biases=np.random.rand(1)-.5
+       
+       
         self.averige_Training_Loss_out=np.zeros(input_shape)
         for out_x in range(0,self.input_x-self.kernel_x+1):
             for out_y in range(0,self.input_y-self.kernel_y+1):
@@ -135,21 +139,22 @@ class BasicCNN:
                         self.averige_Training_Loss_out[xi,yi]+=1
 
     def run_layer(self,data_point):
+
         out=np.zeros((self.input_x-self.kernel_x+1,self.input_y-self.kernel_y+1))
         for x in range(0,self.input_x-self.kernel_x+1):
             for y in range(0,self.input_y-self.kernel_y+1):
                 kernal=data_point[x:x+self.kernel_x,y:y+self.kernel_y]
-                
+
                 i=0
                 for j in range(0,self.kernel_x):
                     for k in range(0,self.kernel_y):
                         out[x,y]+=kernal[j,k]*self.weights[i]
-                        
                         i+=1
-                 
-                out[x,y]=AF(out[x,y]+self.biases,self.af)  
+                out[x,y]=AF(out[x,y]+self.biases,self.af)
+               
+     
         return out
-        
+       
         return AF(np.matmul(self.weights,data_point)+self.biases,self.af)
 
     def train_layer(self,layer_loss,Previus_layer_out,number_points,point_number):
@@ -157,7 +162,7 @@ class BasicCNN:
         if point_number==0:
             self.weights_T=np.zeros((self.kernel_x*self.kernel_y))#input shape = inputes,1
             self.biases_T=np.zeros(1)
-            
+           
         new_layer_loss=np.zeros((self.input_x,self.input_y))
         for out_x in range(0,self.input_x-self.kernel_x+1):
             for out_y in range(0,self.input_y-self.kernel_y+1):
@@ -167,16 +172,16 @@ class BasicCNN:
                         w=self.weights[i]
                         b=self.biases[0]
                         x=Previus_layer_out[xi,yi]
-                
+               
                         z=x*w+b
-                
+               
                         dc_da=layer_loss[out_x,out_y]
                         da_dz=AFP(z, self.af)
-                
+               
                         dz_dw=x
                         dz_db=1
                         dz_dx=w
-                        self.weights_T[i]+=(dc_da*da_dz*dz_dw)/(number_points*(self.input_x-self.kernel_x+1)*(self.input_y-self.kernel_y+1)  )                       
+                        self.weights_T[i]+=(dc_da*da_dz*dz_dw)/(number_points*(self.input_x-self.kernel_x+1)*(self.input_y-self.kernel_y+1)  )                      
                         self.biases_T[0]+=(dc_da*da_dz*dz_db)/(number_points*(self.input_x*self.input_y)*(self.input_x-self.kernel_x+1)*(self.input_y-self.kernel_y+1))
                         new_layer_loss[xi,yi]+=(dc_da*da_dz*dz_dx)/(self.averige_Training_Loss_out[xi,yi])
                         i+=1
@@ -185,12 +190,12 @@ class BasicCNN:
             self.weights-=self.weights_T*self.training_rate
             self.biases-=self.biases_T*self.training_rate
         return new_layer_loss
-                
+               
 
 
 def AF(array,af):
     match af:
-        case "sigmoid": 
+        case "sigmoid":
             return 1/(1 + np.e ** (-array))
         case "gaussian":
             return np.e**(-(array)**2 / 2)
@@ -202,7 +207,7 @@ def AF(array,af):
             print("bad activation function")
 def AFP(array,af):
     match af:
-        case "sigmoid": 
+        case "sigmoid":
             a=np.e**(-array)
             return a/(1 + a)**2
         case "gaussian":
@@ -216,7 +221,7 @@ def AFP(array,af):
             print("bad activation function")
 def lossP(true,pred,error):
     match error:
-        case "MSE": 
+        case "MSE":
             return -2*(true-pred)
         case "MAE":
             for i in range(0, len(true)):
@@ -227,6 +232,7 @@ def lossP(true,pred,error):
                 else:
                     pred[i]=-1
                 return pred
+           
 
         case _:
             print("bad error function")
