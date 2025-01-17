@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation  
 
-datapath="/Users/wellswait/.cache/kagglehub/datasets/oddrationale/mnist-in-csv/versions/2/mnist_train.csv"
+datapath="C:/Users/Wells/.cache/kagglehub/datasets/oddrationale/mnist-in-csv/versions/2/mnist_train.csv"
 
 data=pd.read_csv(datapath)
 datap=data
@@ -19,11 +19,11 @@ datap=data
 
 #a=v.AI([v.BasicCNN((28,28), (14,14), "linear",.5),v.BasicCNN((15,15), (10,10), "sigmoid",.5),v.Flaten2D((6,6)),v.BasicNN(36, 10, "sigmoid",.001)], "MSE")
 
-a=v.AI([v.BasicCNN((28,28),(10,10),"ReLU",.005),v.Flaten2D((19,19)),v.BasicNN(19**2, 40, "sigmoid",.5),v.BasicNN(40, 20, "sigmoid",.5),v.BasicNN(20, 10, "sigmoid",.5)], "MSE")
+#a=v.AI([v.BasicCNN((28,28),(28,19),"sigmoid",1),v.Flaten2D((1,10)),v.BasicNN(10, 10, "sigmoid",1)], "MSE")
+#a=v.AI([v.BasicCNN((28,28),(2,2),"sigmoid",1),v.BasicCNN((27,27),(18,27),"sigmoid",1),v.Flaten2D((10,1))], "MSE")
 
 
-
-
+a=v.AI([v.Flaten2D((28,28)),v.BasicNN(28**2, 500, "sigmoid"),v.BasicNN(500, 100, "sigmoid"),v.BasicNN(100, 10, "sigmoid")], "MSE")
 #%%
 fig, ax = plt.subplots(1,1,figsize=(15,15))
 t=[]
@@ -73,7 +73,7 @@ fig.show()
 da=np.random.randint(0,len(data),size=(100))
 x2=[]
 y2=[]
-for i in range(0,len(da)):
+for i in range(0,len(da)): 
     point=np.zeros((28,28))
     gg=1
     for x in range(0,28):
@@ -81,7 +81,7 @@ for i in range(0,len(da)):
             point[x,y]=data.iloc()[da[i],gg]
             gg+=1
     
-    x2.append(point)
+    x2.append(point/255)
     point=np.zeros(10)
     point[data["label"][da[i]]]+=1
     y2.append(point)
@@ -92,7 +92,8 @@ for i in range(0,len(x2)):
     d=a.run_AI(x2[i])
     if d.argmax()==y2[i].argmax():
        acc+=1
-    print(acc/t,d.argmax())
+    print(acc/t,f"\n\n",d.argmax(),f"\n\n")
+    print(d)
 print(acc/t)
 #%%
 
@@ -109,7 +110,7 @@ for ugi in range(0,100):
                 point[x,y]=data.iloc()[da[i],gg]
                 gg+=1
         
-        x2.append(point)
+        x2.append(point/255)
         point=np.zeros(10)
         point[data["label"][da[i]]]=1
         y2.append(point)

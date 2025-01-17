@@ -144,10 +144,10 @@ class BasicCNN:
                 for j in range(0,self.kernel_x):
                     for k in range(0,self.kernel_y):
                         out[x,y]+=kernal[j,k]*self.weights[i]
+                        
                         i+=1
-                out[x,y]=AF(out[x,y]+self.biases,self.af)
-                
-        print(out)      
+                 
+                out[x,y]=AF(out[x,y]+self.biases,self.af)  
         return out
         
         return AF(np.matmul(self.weights,data_point)+self.biases,self.af)

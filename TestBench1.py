@@ -11,10 +11,10 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation  
 
 
-a=v.AI([v.BasicCNN((20,20), (16,16), "ReLU",.1),v.BasicCNN((5,5), (1,1), "ReLU",.0001) ,v.Flaten2D((5,5)),v.BasicNN(25, 1, "sigmoid",.1)], "MSE")
+#a=v.AI([v.BasicCNN((20,20), (16,16), "ReLU",.1),v.BasicCNN((5,5), (1,1), "ReLU",.0001) ,v.Flaten2D((5,5)),v.BasicNN(25, 1, "sigmoid",.1)], "MSE")
 a2=v.AI([v.BasicCNN((20,20), (16,16), "ReLU",.1),v.Flaten2D((5,5)),v.BasicNN(25, 1, "sigmoid",.1)], "MSE")
 
-#b=v.AI([v.Flaten2D((20,20)),v.BasicNN(400, 64, "ReLU"),v.BasicNN(64, 32, "ReLU"),v.BasicNN(32, 1, "sigmoid")], "MSE")
+a=v.AI([v.Flaten2D((20,20)),v.BasicNN(400, 64, "ReLU"),v.BasicNN(64, 32, "ReLU"),v.BasicNN(32, 1, "sigmoid")], "MSE")
 
 
 alfa=40
