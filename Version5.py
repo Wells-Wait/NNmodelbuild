@@ -39,6 +39,7 @@ class AI:
             layer_output.append(data_point)
             
             layer_loss=lossP(y[point],layer_output[-1],self.error_type)
+ 
             Avrige_Layer_Loss+=(y[point]-layer_output[-1])**2 /number_points
             #back propogate
             for i in range(0,len(self.layers)):
@@ -94,12 +95,14 @@ class Flaten2D:
         self.x=shape[0]
         self.y=shape[1]
     def run_layer(self,data_point):
+
         out=np.zeros(self.x*self.y)
         i=0
         for x in range(0,self.x):
             for y in range(0,self.y):
-                out[i]=data_point[x,y]
+                out[i]=data_point[x,y] 
                 i+=1
+
         return out
     def train_layer(self,layer_loss,Previus_layer_out,number_points,point_number):
         out=np.zeros((self.x,self.y))
@@ -108,6 +111,7 @@ class Flaten2D:
             for y in range(0,self.y):
                 out[x,y]=layer_loss[i]
                 i+=1
+
         return out
 
 class BasicCNN:
@@ -123,8 +127,8 @@ class BasicCNN:
         
         self.training_rate=training_rate
         
-        self.weights=np.random.rand(self.kernel_x*self.kernel_y)#input shape = inputes,1
-        self.biases=np.random.rand(1)
+        self.weights=np.random.rand(self.kernel_x*self.kernel_y)-.5#input shape = inputes,1
+        self.biases=np.random.rand(1)-.5
         
         
         self.averige_Training_Loss_out=np.zeros(input_shape)
@@ -135,11 +139,12 @@ class BasicCNN:
                         self.averige_Training_Loss_out[xi,yi]+=1
 
     def run_layer(self,data_point):
+
         out=np.zeros((self.input_x-self.kernel_x+1,self.input_y-self.kernel_y+1))
         for x in range(0,self.input_x-self.kernel_x+1):
             for y in range(0,self.input_y-self.kernel_y+1):
                 kernal=data_point[x:x+self.kernel_x,y:y+self.kernel_y]
-                
+
                 i=0
                 for j in range(0,self.kernel_x):
                     for k in range(0,self.kernel_y):
@@ -147,7 +152,7 @@ class BasicCNN:
                         i+=1
                 out[x,y]=AF(out[x,y]+self.biases,self.af)
                 
-        print(out)      
+     
         return out
         
         return AF(np.matmul(self.weights,data_point)+self.biases,self.af)
@@ -227,6 +232,7 @@ def lossP(true,pred,error):
                 else:
                     pred[i]=-1
                 return pred
+            
 
         case _:
             print("bad error function")
