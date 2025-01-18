@@ -6,12 +6,13 @@ Created on Wed Jan 15 11:08:48 2025
 @author: wellswait
 """
 import pandas as pd
-import Version5 as v
+import Version6 as v
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation  
 
-datapath="/Users/wellswait/.cache/kagglehub/datasets/oddrationale/mnist-in-csv/versions/2/mnist_train.csv"
+#datapath="/Users/wellswait/.cache/kagglehub/datasets/oddrationale/mnist-in-csv/versions/2/mnist_train.csv"
+datapath="C:/Users/Wells/.cache/kagglehub/datasets/oddrationale/mnist-in-csv/versions/2/mnist_train.csv"
 
 data=pd.read_csv(datapath)
 datap=data
